@@ -34,25 +34,25 @@ class MeterReadingDeserializer @JvmOverloads constructor(vc: Class<*>? = null) :
 
         meterReadingObject.setValue("id", id)
         meterReadingObject.setValue("title", title)
-        meterReadingObject.setValue("meterInfo", convertToGenericReadingType(jp, readingType))
+        meterReadingObject.setValue("meterInfo", readingType.convertToGenericReadingType(jp))
         meterReadingObject.setValue("intervalReadings", intervalReadings)
 
         return objectMapper.treeToValue(meterReadingObject, MeterReading::class.java)
     }
 
-    private fun convertToGenericReadingType(jp: JsonParser, jNode: JsonNode): ObjectNode {
+    private fun JsonNode.convertToGenericReadingType(jp: JsonParser): ObjectNode {
         val unitPriceKeySuffix = "Price"
         val genericUnitPriceKey = "unitPrice"
-
         val objNode = jp.createObjectNode()
 
-        val it = jNode.fields()
+        val it = fields()
         while (it.hasNext()) {
-            val pair = it.next()
-            if (pair.key.endsWith(unitPriceKeySuffix)) {
-                objNode.setValue(genericUnitPriceKey, pair.value)
+            val (key, value) = it.next()
+
+            if (key.endsWith(unitPriceKeySuffix)) {
+                objNode.setValue(genericUnitPriceKey, value)
             } else {
-                objNode.setValue(pair.key, pair.value)
+                objNode.setValue(key, value)
             }
         }
         return objNode
