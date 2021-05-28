@@ -10,12 +10,13 @@ data class MeterReading(
     val meterInfo: MeterInfo
 )
 
-//@XmlRootElement(name = "ReadingType")
 data class MeterInfo(
     val flowDirection: Int, // add assumption, 0 or 1 bit, 0 means dat het er van af gaat, boolean
     val kWhPrice: Float, // add assumption, precision, BigDecimal
     val readingUnit: ReadingUnit
 )
+
+//data class IntervalReading
 
 enum class ReadingUnit {
     KWH, MWH, GWH // add assumption

@@ -40,4 +40,15 @@ internal class MeterFileProcessorTest {
 
         //then
     }
+
+    @Test
+    fun `should process a real meter file`() {
+        // given
+        val file = File(pathPrefix + "meter1.xml")
+
+        //when
+        subject.processFile(file)
+
+        //then
+    }
 }
