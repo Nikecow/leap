@@ -1,0 +1,2 @@
+1 file per dag per meter
+elke meter heeft maar 1 readingtype, met een 0 of 1 als flow

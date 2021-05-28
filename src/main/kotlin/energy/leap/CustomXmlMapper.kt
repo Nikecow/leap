@@ -1,26 +1,25 @@
 package energy.leap
 
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule
+import com.fasterxml.jackson.databind.MapperFeature
+import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 
 class CustomXmlMapper {
     private val xmlMapper: XmlMapper
 
     init {
-//        xmlMapper = XmlMapper.builder()
-//            .defaultUseWrapper(false)
-//            .enable(DeserializationFeature.UNWRAP_ROOT_VALUE)
-//           .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-//            .addModule(JacksonXmlModule())
-//            .build()
+        val deserializerModule = SimpleModule()
+            .addDeserializer(MeterReading::class.java, MeterReadingDeserializer())
 
-        val module = JacksonXmlModule()
-        module.setDefaultUseWrapper(true)
-        xmlMapper = XmlMapper(module)
-        xmlMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-        xmlMapper.enable(DeserializationFeature.UNWRAP_ROOT_VALUE)
-
+        xmlMapper = XmlMapper
+            .builder()
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+            .addModule(KotlinModule())
+            .addModule(deserializerModule)
+            .build()
     }
 
     fun getMapper() = xmlMapper
