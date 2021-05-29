@@ -13,7 +13,8 @@ import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
-import java.time.temporal.ChronoUnit
+import java.time.temporal.ChronoUnit.HOURS
+import java.time.temporal.ChronoUnit.SECONDS
 
 class MeterFileProcessor {
     private val xmlMapper = CustomXmlMapper()
@@ -39,7 +40,7 @@ class MeterFileProcessor {
 
         logger.debug { "Writing report for meter $meterName to file" }
 
-        val timeStamp = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+        val timeStamp = LocalDateTime.now().truncatedTo(SECONDS)
         val fileName = "${meterName.replace(" ", "_")}-$timeStamp.json"
         val file = File("target/$fileName")
 
@@ -60,7 +61,7 @@ class MeterFileProcessor {
                 it.value.divide(duration, 10, RoundingMode.HALF_UP).applyFlow(meterInfo.flowDirection)
 
             for (second in startOfReading until endOfReading) {
-                val startOfHour = second.toZonedDateTime().truncatedTo(ChronoUnit.HOURS).toEpochSecond()
+                val startOfHour = second.toZonedDateTime().truncatedTo(HOURS).toEpochSecond()
                 val usage = hourlyData[startOfHour] ?: BigDecimal.ZERO
                 hourlyData[startOfHour] = usage.plus(usagePerSecond)
             }
