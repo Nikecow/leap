@@ -19,5 +19,5 @@ enum class FlowDirection(private val value: Int) {
 }
 
 enum class ReadingUnit {
-    KWH, MWH, GWH
+    WH, KWH
 }

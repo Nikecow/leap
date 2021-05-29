@@ -17,9 +17,8 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.HOURS
 import java.time.temporal.ChronoUnit.SECONDS
 
-class MeterFileProcessor {
+class MeterFileProcessor(private val objectMapper: CustomObjectMapper = CustomObjectMapper()) {
     private val xmlMapper = CustomXmlMapper()
-    private val objectMapper = CustomObjectMapper()
 
     private val logger = KotlinLogging.logger { }
 
@@ -46,7 +45,7 @@ class MeterFileProcessor {
         val fileName = "${id}_$timeStamp.json"
         val file = File("target/$fileName")
 
-        objectMapper.getMapper().writeValue(file, report)
+        objectMapper.writeToFile(file, report)
 
         logger.info { "Wrote report to ${file.absoluteFile}" }
 
@@ -59,7 +58,7 @@ class MeterFileProcessor {
             val duration = it.timePeriod.duration
             val startOfReading = it.timePeriod.start.toEpochSecond()
             val endOfReading = startOfReading + duration.toLong()
-            val usagePerSecond = it.value.divide(duration, 10, HALF_UP).applyFlow(meterInfo.flowDirection)
+            val usagePerSecond = it.value.divide(duration, 10, HALF_UP)
 
             for (second in startOfReading until endOfReading) {
                 val startOfHour = second.toZonedDateTime().truncatedTo(HOURS).toEpochSecond()
@@ -69,7 +68,7 @@ class MeterFileProcessor {
         }
 
         val usageSum = hourlyData.values.reduce(BigDecimal::add)
-        val priceSum = usageSum.multiply(meterInfo.unitPrice).roundTwoDecimals()
+        val priceSum = usageSum.multiply(meterInfo.unitPrice).applyFlow(meterInfo.flowDirection).roundTwoDecimals()
 
         return MeterReport(
             id = id,
@@ -77,7 +76,7 @@ class MeterFileProcessor {
             meterInfo = meterInfo,
             priceSum = priceSum,
             usageSum = usageSum,
-            hourlyData = hourlyData.toReportFormat(meterInfo.unitPrice)
+            hourlyData = hourlyData.toReportFormat(meterInfo.unitPrice.applyFlow(meterInfo.flowDirection))
         ).also {
             logger.debug { "Generated meter report $it" }
         }
@@ -93,5 +92,5 @@ class MeterFileProcessor {
 
     private fun Long.toZonedDateTime() = ZonedDateTime.ofInstant(Instant.ofEpochSecond(this), ZoneOffset.UTC)
     private fun BigDecimal.roundTwoDecimals() = setScale(2, HALF_UP)
-    private fun BigDecimal.applyFlow(flow: FlowDirection) = if (flow == FlowDirection.UP) this.negate() else this
+    private fun BigDecimal.applyFlow(flow: FlowDirection) = if (flow == FlowDirection.UP) this else this.negate()
 }

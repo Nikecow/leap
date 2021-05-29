@@ -1,12 +1,12 @@
 <feed>
-    <id>8a46b097-b80a-4e25-8852-44f88b9179ae</id>
-    <title type="text">Test Meter</title>
+    <id>2646bfb3-20aa-3412-ffab-44f88b917911</id>
+    <title type="text">Disjointed Meter</title>
     <entry>
         <content>
             <ReadingType>
                 <flowDirection>1</flowDirection>
-                <kWhPrice>1</kWhPrice>
-                <readingUnit>kWh</readingUnit>
+                <kWhPrice>0.07</kWhPrice>
+                <readingUnit>Wh</readingUnit>
             </ReadingType>
         </content>
     </entry>
@@ -16,30 +16,23 @@
                 <IntervalReading>
                     <timePeriod>
                         <duration>3600</duration>
-                        <start>1555491595</start>
+                        <start>1555484400</start>
                     </timePeriod>
-                    <value>3600</value>
+                    <value>200</value>
                 </IntervalReading>
                 <IntervalReading>
                     <timePeriod>
                         <duration>900</duration>
                         <start>1555491600</start>
                     </timePeriod>
-                    <value>900</value>
+                    <value>40</value>
                 </IntervalReading>
                 <IntervalReading>
                     <timePeriod>
                         <duration>900</duration>
-                        <start>1555492500</start>
+                        <start>1555498800</start>
                     </timePeriod>
-                    <value>900</value>
-                </IntervalReading>
-                <IntervalReading>
-                    <timePeriod>
-                        <duration>3600</duration>
-                        <start>1555504200</start>
-                    </timePeriod>
-                    <value>3600</value>
+                    <value>60</value>
                 </IntervalReading>
             </IntervalBlock>
         </content>

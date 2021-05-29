@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test
 import java.time.ZonedDateTime
 import java.util.UUID
 
-internal class MeterReadingDeserializerTests {
+internal class MeterReadingDeserializerTest {
     private val xmlMapper = CustomXmlMapper()
 
     @Test
@@ -27,8 +27,8 @@ internal class MeterReadingDeserializerTests {
         val result = readValue<MeterReading>(
             """
                 <feed>
-                    <id>3b46b097-b80a-4e25-8852-44f88b9179ae</id>
-                    <title type="text">Simple Meter</title>
+                    <id>4b46b097-b80a-4e25-8852-44f88b9179ae</id>
+                    <title type="text">Some Meter</title>
                     <entry>
                         <content>
                             <ReadingType>
@@ -62,8 +62,8 @@ internal class MeterReadingDeserializerTests {
         """
         )
 
-        assertThat(result.id).isEqualTo(UUID.fromString("3b46b097-b80a-4e25-8852-44f88b9179ae"))
-        assertThat(result.title).isEqualTo("Simple Meter")
+        assertThat(result.id).isEqualTo(UUID.fromString("4b46b097-b80a-4e25-8852-44f88b9179ae"))
+        assertThat(result.title).isEqualTo("Some Meter")
         assertThat(result.meterInfo.flowDirection).isEqualTo(FlowDirection.DOWN)
         assertThat(result.meterInfo.unitPrice).isEqualByComparingTo("0.123")
         assertThat(result.meterInfo.readingUnit).isEqualTo(ReadingUnit.KWH)
@@ -74,6 +74,50 @@ internal class MeterReadingDeserializerTests {
         assertThat(result.intervalReadings[1].timePeriod.duration).isEqualByComparingTo("100.523")
         assertThat(result.intervalReadings[1].timePeriod.start).isSameInstant(ZonedDateTime.parse("2019-04-17T09:45:50Z"))
         assertThat(result.intervalReadings[1].value).isEqualByComparingTo("49000.3322")
+    }
+
+    @Test
+    internal fun `should accept meter xml with just one interval reading`() {
+        val result = readValue<MeterReading>(
+            """
+                <feed>
+                    <id>3b46b097-b80a-4e25-8852-44f88b9179ae</id>
+                    <title type="text">Simple Meter</title>
+                    <entry>
+                        <content>
+                            <ReadingType>
+                                <flowDirection>0</flowDirection>
+                                <kWhPrice>0.123</kWhPrice>
+                                <readingUnit>kWh</readingUnit>
+                            </ReadingType>
+                        </content>
+                    </entry>
+                    <entry>
+                        <content>
+                            <IntervalBlock>
+                                <IntervalReading>
+                                    <timePeriod>
+                                        <duration>3600</duration>
+                                        <start>1555484400</start>
+                                    </timePeriod>
+                                    <value>340000</value>
+                                </IntervalReading>
+                            </IntervalBlock>
+                        </content>
+                    </entry>
+                </feed>
+        """
+        )
+
+        assertThat(result.id).isEqualTo(UUID.fromString("3b46b097-b80a-4e25-8852-44f88b9179ae"))
+        assertThat(result.title).isEqualTo("Simple Meter")
+        assertThat(result.meterInfo.flowDirection).isEqualTo(FlowDirection.DOWN)
+        assertThat(result.meterInfo.unitPrice).isEqualByComparingTo("0.123")
+        assertThat(result.meterInfo.readingUnit).isEqualTo(ReadingUnit.KWH)
+        assertThat(result.intervalReadings.size).isEqualTo(1)
+        assertThat(result.intervalReadings[0].timePeriod.duration).isEqualByComparingTo("3600")
+        assertThat(result.intervalReadings[0].timePeriod.start).isSameInstant(ZonedDateTime.parse("2019-04-17T07:00:00Z"))
+        assertThat(result.intervalReadings[0].value).isEqualByComparingTo("340000")
     }
 
     @Test
@@ -104,7 +148,7 @@ internal class MeterReadingDeserializerTests {
             )
         }.isFailure().all {
             hasClass(MismatchedInputException::class.java)
-            messageContains("""Cannot deserialize value of type `java.util.ArrayList<energy.leap.model.IntervalReading>` from [Unavailable value] (token `JsonToken.NOT_AVAILABLE`)""")
+            messageContains("""Cannot deserialize value of type `energy.leap.model.IntervalReading` from [Unavailable value] (token `JsonToken.NOT_AVAILABLE`)""")
         }
     }
 
