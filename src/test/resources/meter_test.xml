@@ -1,6 +1,6 @@
 <feed>
     <id>1a46b097-b80a-4e25-8852-44f88b9179ae</id>
-    <title type="text">Green Button Usage Feed</title>
+    <title type="text">Test Meter</title>
     <entry>
         <content>
             <ReadingType>
@@ -36,17 +36,10 @@
                 </IntervalReading>
                 <IntervalReading>
                     <timePeriod>
-                        <duration>900</duration>
-                        <start>1555493400</start>
+                        <duration>3600</duration>
+                        <start>1555504200</start>
                     </timePeriod>
-                    <value>900</value>
-                </IntervalReading>
-                <IntervalReading>
-                    <timePeriod>
-                        <duration>900</duration>
-                        <start>1555494300</start>
-                    </timePeriod>
-                    <value>900</value>
+                    <value>3600</value>
                 </IntervalReading>
             </IntervalBlock>
         </content>

@@ -1,6 +1,7 @@
 package energy.leap
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import energy.leap.model.FlowDirection
 import energy.leap.model.HourData
 import energy.leap.model.MeterReading
 import energy.leap.model.MeterReport
@@ -26,7 +27,6 @@ class MeterFileProcessor {
         val reading = readFile(file)
 
         generateReport(reading.toReport())
-
     }
 
     private fun readFile(file: File) =
@@ -56,7 +56,8 @@ class MeterFileProcessor {
             val duration = it.timePeriod.duration
             val startOfReading = it.timePeriod.start.toEpochSecond()
             val endOfReading = startOfReading + duration.toLong()
-            val usagePerSecond = it.value.divide(duration, 10, RoundingMode.HALF_UP)
+            val usagePerSecond =
+                it.value.divide(duration, 10, RoundingMode.HALF_UP).applyFlowDirection(meterInfo.flowDirection)
 
             var epochSecond = startOfReading
 
@@ -80,7 +81,7 @@ class MeterFileProcessor {
             totalUsage = totalUsage,
             hourlyData = hourlyData.toReportFormat(meterInfo.unitPrice)
         ).also {
-            logger.info { "Generated meter report $it" }
+            logger.debug { "Generated meter report $it" }
         }
     }
 
@@ -94,5 +95,7 @@ class MeterFileProcessor {
 
     private fun Long.toZonedDateTime() = ZonedDateTime.ofInstant(Instant.ofEpochSecond(this), ZoneOffset.UTC)
     private fun BigDecimal.roundTwoDecimals() = setScale(2, RoundingMode.HALF_UP)
+    private fun BigDecimal.applyFlowDirection(flow: FlowDirection) =
+        if (flow == FlowDirection.UP) this.negate() else this
 
 }
