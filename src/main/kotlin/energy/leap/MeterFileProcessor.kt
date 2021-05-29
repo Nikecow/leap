@@ -8,7 +8,8 @@ import energy.leap.model.MeterReport
 import mu.KotlinLogging
 import java.io.File
 import java.math.BigDecimal
-import java.math.RoundingMode
+import java.math.BigDecimal.ZERO
+import java.math.RoundingMode.HALF_UP
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
@@ -37,11 +38,12 @@ class MeterFileProcessor {
 
     private fun generateReport(report: MeterReport) {
         val meterName = report.title
+        val id = report.id
 
-        logger.debug { "Writing report for meter $meterName to file" }
+        logger.debug { "Writing report for meter $meterName with id $id to file" }
 
         val timeStamp = LocalDateTime.now().truncatedTo(SECONDS)
-        val fileName = "${meterName.replace(" ", "_")}-$timeStamp.json"
+        val fileName = "${id}_$timeStamp.json"
         val file = File("target/$fileName")
 
         objectMapper.getMapper().writeValue(file, report)
@@ -57,25 +59,24 @@ class MeterFileProcessor {
             val duration = it.timePeriod.duration
             val startOfReading = it.timePeriod.start.toEpochSecond()
             val endOfReading = startOfReading + duration.toLong()
-            val usagePerSecond =
-                it.value.divide(duration, 10, RoundingMode.HALF_UP).applyFlow(meterInfo.flowDirection)
+            val usagePerSecond = it.value.divide(duration, 10, HALF_UP).applyFlow(meterInfo.flowDirection)
 
             for (second in startOfReading until endOfReading) {
                 val startOfHour = second.toZonedDateTime().truncatedTo(HOURS).toEpochSecond()
-                val usage = hourlyData[startOfHour] ?: BigDecimal.ZERO
+                val usage = hourlyData[startOfHour] ?: ZERO
                 hourlyData[startOfHour] = usage.plus(usagePerSecond)
             }
         }
 
-        val totalUsage = hourlyData.values.reduce(BigDecimal::add)
-        val totalPrice = totalUsage.multiply(meterInfo.unitPrice).roundTwoDecimals()
+        val usageSum = hourlyData.values.reduce(BigDecimal::add)
+        val priceSum = usageSum.multiply(meterInfo.unitPrice).roundTwoDecimals()
 
         return MeterReport(
             id = id,
             title = title,
             meterInfo = meterInfo,
-            totalPrice = totalPrice,
-            totalUsage = totalUsage,
+            priceSum = priceSum,
+            usageSum = usageSum,
             hourlyData = hourlyData.toReportFormat(meterInfo.unitPrice)
         ).also {
             logger.debug { "Generated meter report $it" }
@@ -91,6 +92,6 @@ class MeterFileProcessor {
     }.toMap()
 
     private fun Long.toZonedDateTime() = ZonedDateTime.ofInstant(Instant.ofEpochSecond(this), ZoneOffset.UTC)
-    private fun BigDecimal.roundTwoDecimals() = setScale(2, RoundingMode.HALF_UP)
+    private fun BigDecimal.roundTwoDecimals() = setScale(2, HALF_UP)
     private fun BigDecimal.applyFlow(flow: FlowDirection) = if (flow == FlowDirection.UP) this.negate() else this
 }

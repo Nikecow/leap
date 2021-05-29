@@ -8,8 +8,8 @@ data class MeterReport(
     val id: UUID,
     val title: String,
     val meterInfo: MeterInfo,
-    val totalPrice: BigDecimal,
-    val totalUsage: BigDecimal,
+    val priceSum: BigDecimal,
+    val usageSum: BigDecimal,
     val hourlyData: Map<ZonedDateTime, HourData>
 )
 

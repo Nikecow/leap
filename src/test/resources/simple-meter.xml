@@ -1,0 +1,33 @@
+<feed>
+    <id>3b46b097-b80a-4e25-8852-44f88b9179ae</id>
+    <title type="text">Simple Meter</title>
+    <entry>
+        <content>
+            <ReadingType>
+                <flowDirection>1</flowDirection>
+                <kWhPrice>0.10</kWhPrice>
+                <readingUnit>kWh</readingUnit>
+            </ReadingType>
+        </content>
+    </entry>
+    <entry>
+        <content>
+            <IntervalBlock>
+                <IntervalReading>
+                    <timePeriod>
+                        <duration>3600</duration>
+                        <start>1555484400</start>
+                    </timePeriod>
+                    <value>340000</value>
+                </IntervalReading>
+                <IntervalReading>
+                    <timePeriod>
+                        <duration>900</duration>
+                        <start>1555494300</start>
+                    </timePeriod>
+                    <value>49000</value>
+                </IntervalReading>
+            </IntervalBlock>
+        </content>
+    </entry>
+</feed>
