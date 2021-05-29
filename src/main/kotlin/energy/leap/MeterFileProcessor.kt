@@ -7,11 +7,11 @@ import energy.leap.model.MeterReport
 import mu.KotlinLogging
 import java.io.File
 import java.math.BigDecimal
-import java.time.LocalDateTime
+import java.math.RoundingMode
+import java.time.Instant
 import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
-
-const val HOUR_DURATION_IN_SECONDS = 3600L
 
 class MeterFileProcessor {
     private val xmlMapper = CustomXmlMapper()
@@ -39,26 +39,23 @@ class MeterFileProcessor {
         val hourlyData: MutableMap<Long, BigDecimal> = mutableMapOf()
 
         intervalReadings.forEach {
-            val start = it.timePeriod.start
             val duration = it.timePeriod.duration
-            val startOfReading = start.toEpochSecond()
-            val startOfHour = start.truncatedTo(ChronoUnit.HOURS).toEpochSecond()
+            val startOfReading = it.timePeriod.start.toEpochSecond()
             val endOfReading = startOfReading + duration.toLong()
-            val usagePerSecond = it.value / duration
+            val usagePerSecond = it.value.divide(duration, 10, RoundingMode.HALF_UP)
 
             var epochSecond = startOfReading
 
             while (epochSecond < endOfReading) {
-                val hour =
-                    epochSecond + ((epochSecond - startOfHour) % HOUR_DURATION_IN_SECONDS) * HOUR_DURATION_IN_SECONDS
-                val usage = hourlyData[hour] ?: BigDecimal.ZERO
-                hourlyData[hour] = usage + usagePerSecond
+                val startOfHour = epochSecond.toZonedDateTime().truncatedTo(ChronoUnit.HOURS).toEpochSecond()
+                val usage = hourlyData[startOfHour] ?: BigDecimal.ZERO
+                hourlyData[startOfHour] = usage.plus(usagePerSecond)
 
                 epochSecond += 1
             }
         }
         val totalUsage = hourlyData.values.reduce(BigDecimal::add)
-        val totalPrice = totalUsage * meterInfo.unitPrice
+        val totalPrice = totalUsage.multiply(meterInfo.unitPrice).roundTwoDecimals()
 
         return MeterReport(
             id = id,
@@ -67,15 +64,19 @@ class MeterFileProcessor {
             totalPrice = totalPrice,
             totalUsage = totalUsage,
             hourlyData = hourlyData.toReportFormat(meterInfo.unitPrice)
-        ).also { logger.info { "Generated meter report $it " } }
+        ).also { logger.info { "Generated meter report $it" } }
 
     }
 
     private fun MutableMap<Long, BigDecimal>.toReportFormat(unitPrice: BigDecimal) = map {
-        val localDateTime = LocalDateTime.ofEpochSecond(it.key, 0, ZoneOffset.UTC)
-        val usage = it.value
-        val price = usage * unitPrice
+        val time = it.key.toZonedDateTime()
+        val usage = it.value.roundTwoDecimals()
+        val price = usage.multiply(unitPrice).roundTwoDecimals()
 
-        localDateTime to HourData(usage = usage, price = price)
+        time to HourData(usage = usage, price = price)
     }.toMap()
+
+    private fun Long.toZonedDateTime() = ZonedDateTime.ofInstant(Instant.ofEpochSecond(this), ZoneOffset.UTC)
+    private fun BigDecimal.roundTwoDecimals() = setScale(2, RoundingMode.HALF_UP)
+
 }

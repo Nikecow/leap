@@ -1,7 +1,7 @@
 package energy.leap.model
 
 import java.math.BigDecimal
-import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.util.UUID
 
 data class MeterReport(
@@ -10,7 +10,7 @@ data class MeterReport(
     val meterInfo: MeterInfo,
     val totalPrice: BigDecimal,
     val totalUsage: BigDecimal,
-    val hourlyData: Map<LocalDateTime, HourData>
+    val hourlyData: Map<ZonedDateTime, HourData>
 )
 
 data class HourData(
