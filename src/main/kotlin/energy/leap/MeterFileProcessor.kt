@@ -43,7 +43,7 @@ class MeterFileProcessor {
         val fileName = "${meterName.replace(" ", "_")}-$timeStamp.json"
         val file = File("target/$fileName")
 
-        objectMapper.getMapper().writeValue(file, report);
+        objectMapper.getMapper().writeValue(file, report)
 
         logger.info { "Wrote report to ${file.absoluteFile}" }
 
@@ -57,16 +57,12 @@ class MeterFileProcessor {
             val startOfReading = it.timePeriod.start.toEpochSecond()
             val endOfReading = startOfReading + duration.toLong()
             val usagePerSecond =
-                it.value.divide(duration, 10, RoundingMode.HALF_UP).applyFlowDirection(meterInfo.flowDirection)
+                it.value.divide(duration, 10, RoundingMode.HALF_UP).applyFlow(meterInfo.flowDirection)
 
-            var epochSecond = startOfReading
-
-            while (epochSecond < endOfReading) {
-                val startOfHour = epochSecond.toZonedDateTime().truncatedTo(ChronoUnit.HOURS).toEpochSecond()
+            for (second in startOfReading until endOfReading) {
+                val startOfHour = second.toZonedDateTime().truncatedTo(ChronoUnit.HOURS).toEpochSecond()
                 val usage = hourlyData[startOfHour] ?: BigDecimal.ZERO
                 hourlyData[startOfHour] = usage.plus(usagePerSecond)
-
-                epochSecond += 1
             }
         }
 
@@ -95,7 +91,5 @@ class MeterFileProcessor {
 
     private fun Long.toZonedDateTime() = ZonedDateTime.ofInstant(Instant.ofEpochSecond(this), ZoneOffset.UTC)
     private fun BigDecimal.roundTwoDecimals() = setScale(2, RoundingMode.HALF_UP)
-    private fun BigDecimal.applyFlowDirection(flow: FlowDirection) =
-        if (flow == FlowDirection.UP) this.negate() else this
-
+    private fun BigDecimal.applyFlow(flow: FlowDirection) = if (flow == FlowDirection.UP) this.negate() else this
 }
