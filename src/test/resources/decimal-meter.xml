@@ -1,0 +1,47 @@
+<feed>
+    <id>9846b097-b80a-4e25-8852-44f88b9179ae</id>
+    <title type="text">Decimal Meter</title>
+    <entry>
+        <content>
+            <ReadingType>
+                <flowDirection>1</flowDirection>
+                <kWhPrice>0.00123</kWhPrice>
+                <readingUnit>kWh</readingUnit>
+            </ReadingType>
+        </content>
+    </entry>
+    <entry>
+        <content>
+            <IntervalBlock>
+                <IntervalReading>
+                    <timePeriod>
+                        <duration>3600</duration>
+                        <start>1555484400</start>
+                    </timePeriod>
+                    <value>100.123</value>
+                </IntervalReading>
+                <IntervalReading>
+                    <timePeriod>
+                        <duration>3600</duration>
+                        <start>1555488000</start>
+                    </timePeriod>
+                    <value>50.021</value>
+                </IntervalReading>
+                <IntervalReading>
+                    <timePeriod>
+                        <duration>1800.50</duration>
+                        <start>1555491600</start>
+                    </timePeriod>
+                    <value>0.20</value>
+                </IntervalReading>
+                <IntervalReading>
+                    <timePeriod>
+                        <duration>1799.50</duration>
+                        <start>1555493400.50</start>
+                    </timePeriod>
+                    <value>0.20</value>
+                </IntervalReading>
+            </IntervalBlock>
+        </content>
+    </entry>
+</feed>

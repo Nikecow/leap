@@ -198,4 +198,35 @@ internal class MeterFileProcessorTest {
             assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.price).isEqualByComparingTo("21.00")
         }
     }
+
+    @Test
+    fun `should process a meter with lots of decimal values`() {
+        // given
+        val file = File(pathPrefix + "decimal-meter.xml")
+
+        // when
+        subject.processFile(file)
+
+        // then
+        argumentCaptor<MeterReport>().apply {
+            verify(customObjectMapper).writeToFile(
+                eq(File("target/Decimal_Meter_9846b097-b80a-4e25-8852-44f88b9179ae.json")),
+                capture()
+            )
+
+            assertThat(firstValue.id).isEqualTo(UUID.fromString("9846b097-b80a-4e25-8852-44f88b9179ae"))
+            assertThat(firstValue.title).isEqualTo("Decimal Meter")
+            assertThat(firstValue.meterInfo.flowDirection).isEqualTo(FlowDirection.UP)
+            assertThat(firstValue.meterInfo.unitPrice).isEqualByComparingTo("0.00123")
+            assertThat(firstValue.meterInfo.readingUnit).isEqualTo(ReadingUnit.KWH)
+            assertThat(firstValue.priceSum).isEqualByComparingTo("0.18")
+            assertThat(firstValue.usageSum).isEqualByComparingTo("150.34394425901138888980")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.usage).isEqualByComparingTo("100.12")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.price).isEqualByComparingTo("0.12")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T08:00:00Z")]!!.usage).isEqualByComparingTo("50.02")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T08:00:00Z")]!!.price).isEqualByComparingTo("0.06")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.usage).isEqualByComparingTo("0.20")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.price).isEqualByComparingTo("0.00")
+        }
+    }
 }
