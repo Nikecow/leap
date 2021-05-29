@@ -9,12 +9,15 @@ import java.io.File
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.time.Instant
+import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 
 class MeterFileProcessor {
     private val xmlMapper = CustomXmlMapper()
+    private val objectMapper = CustomObjectMapper()
+
     private val logger = KotlinLogging.logger { }
 
     fun processFile(file: File) {
@@ -32,6 +35,17 @@ class MeterFileProcessor {
         }
 
     private fun generateReport(report: MeterReport) {
+        val meterName = report.title
+
+        logger.debug { "Writing report for meter $meterName to file" }
+
+        val timeStamp = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)
+        val fileName = "${meterName.replace(" ", "_")}-$timeStamp.json"
+        val file = File("target/$fileName")
+
+        objectMapper.getMapper().writeValue(file, report);
+
+        logger.info { "Wrote report to ${file.absoluteFile}" }
 
     }
 
@@ -54,6 +68,7 @@ class MeterFileProcessor {
                 epochSecond += 1
             }
         }
+
         val totalUsage = hourlyData.values.reduce(BigDecimal::add)
         val totalPrice = totalUsage.multiply(meterInfo.unitPrice).roundTwoDecimals()
 
@@ -64,8 +79,9 @@ class MeterFileProcessor {
             totalPrice = totalPrice,
             totalUsage = totalUsage,
             hourlyData = hourlyData.toReportFormat(meterInfo.unitPrice)
-        ).also { logger.info { "Generated meter report $it" } }
-
+        ).also {
+            logger.info { "Generated meter report $it" }
+        }
     }
 
     private fun MutableMap<Long, BigDecimal>.toReportFormat(unitPrice: BigDecimal) = map {

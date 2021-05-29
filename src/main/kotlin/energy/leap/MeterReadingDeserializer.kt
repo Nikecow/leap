@@ -3,14 +3,9 @@ package energy.leap
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.DeserializationContext
-import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.MapperFeature
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import energy.leap.model.MeterReading
 import java.io.IOException
 
@@ -22,14 +17,10 @@ class MeterReadingDeserializer @JvmOverloads constructor(vc: Class<*>? = null) :
     private val UNIT_PRICE_KEY_SUFFIX = "Price"
     private val GENERIC_UNIT_PRICE_KEY = "unitPrice"
 
-    private val objectMapper: ObjectMapper = ObjectMapper()
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true)
-        .configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS, true)
-        .registerKotlinModule()
-        .registerModule(JavaTimeModule())
+    private val objectMapper = CustomObjectMapper()
 
     @Throws(IOException::class, JsonProcessingException::class)
-    override fun deserialize(jp: JsonParser, context: DeserializationContext?): MeterReading? {
+    override fun deserialize(jp: JsonParser, context: DeserializationContext?): MeterReading {
         val root = jp.codec.readTree<JsonNode>(jp)
 
         val id = root.at("/id")
@@ -44,7 +35,7 @@ class MeterReadingDeserializer @JvmOverloads constructor(vc: Class<*>? = null) :
         meterReadingObject.setValue(METER_INFO_KEY, readingType.convertToGenericReadingType(jp))
         meterReadingObject.setValue(INTERVAL_READINGS_KEY, intervalReadings)
 
-        return objectMapper.treeToValue(meterReadingObject, MeterReading::class.java)
+        return objectMapper.getMapper().treeToValue(meterReadingObject, MeterReading::class.java)
     }
 
     private fun JsonNode.convertToGenericReadingType(jp: JsonParser): ObjectNode {

@@ -13,7 +13,6 @@ class CustomXmlMapper {
     init {
         val deserializerModule = SimpleModule()
             .addDeserializer(MeterReading::class.java, MeterReadingDeserializer())
-        // todo: serializer maken voor het wegschrijven?
 
         xmlMapper = XmlMapper
             .builder()
