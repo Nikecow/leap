@@ -1,14 +1,15 @@
 package energy.leap
 
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.io.File
 
 internal class MeterFileProcessorIT {
     private val pathPrefix = "src/test/resources"
 
-    private val subject = MeterFileProcessor()
+    private val subject = MeterFileProcessor(CustomObjectMapper())
 
-    //@Disabled
+    @Disabled
     @Test
     fun `should process all meter files`() {
         File(pathPrefix).walk().forEach {

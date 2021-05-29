@@ -41,14 +41,14 @@ internal class MeterFileProcessorTest {
             assertThat(firstValue.meterInfo.flowDirection).isEqualTo(FlowDirection.UP)
             assertThat(firstValue.meterInfo.unitPrice).isEqualByComparingTo("0.07")
             assertThat(firstValue.meterInfo.readingUnit).isEqualTo(ReadingUnit.KWH)
-            assertThat(firstValue.priceSum).isEqualByComparingTo("56000.00")
-            assertThat(firstValue.usageSum).isEqualByComparingTo("799999.9999997400")
+            assertThat(firstValue.priceSum).isEqualByComparingTo("45500.00")
+            assertThat(firstValue.usageSum).isEqualByComparingTo("649999.99999975500000000000")
             assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.usage).isEqualByComparingTo("340000.00")
             assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.price).isEqualByComparingTo("23800.00")
             assertThat(firstValue.hourlyData[parse("2019-04-17T08:00:00Z")]!!.usage).isEqualByComparingTo("260000.000")
             assertThat(firstValue.hourlyData[parse("2019-04-17T08:00:00Z")]!!.price).isEqualByComparingTo("18200.00")
-            assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.usage).isEqualByComparingTo("200000.00")
-            assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.price).isEqualByComparingTo("14000.00")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.usage).isEqualByComparingTo("50000.00")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.price).isEqualByComparingTo("3500.00")
         }
     }
 
@@ -72,14 +72,14 @@ internal class MeterFileProcessorTest {
             assertThat(firstValue.meterInfo.flowDirection).isEqualTo(FlowDirection.UP)
             assertThat(firstValue.meterInfo.unitPrice).isEqualByComparingTo("0.07")
             assertThat(firstValue.meterInfo.readingUnit).isEqualTo(ReadingUnit.WH)
-            assertThat(firstValue.priceSum).isEqualByComparingTo("46.20")
-            assertThat(firstValue.usageSum).isEqualByComparingTo("660.0000001500")
+            assertThat(firstValue.priceSum).isEqualByComparingTo("35.70")
+            assertThat(firstValue.usageSum).isEqualByComparingTo("510.00000009750000000000")
             assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.usage).isEqualByComparingTo("200.00")
             assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.price).isEqualByComparingTo("14.00")
             assertThat(firstValue.hourlyData[parse("2019-04-17T08:00:00Z")]!!.usage).isEqualByComparingTo("260.00")
             assertThat(firstValue.hourlyData[parse("2019-04-17T08:00:00Z")]!!.price).isEqualByComparingTo("18.20")
-            assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.usage).isEqualByComparingTo("200.00")
-            assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.price).isEqualByComparingTo("14.00")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.usage).isEqualByComparingTo("50.00")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.price).isEqualByComparingTo("3.50")
         }
     }
 
@@ -130,14 +130,14 @@ internal class MeterFileProcessorTest {
             assertThat(firstValue.meterInfo.flowDirection).isEqualTo(FlowDirection.UP)
             assertThat(firstValue.meterInfo.unitPrice).isEqualByComparingTo("0.07")
             assertThat(firstValue.meterInfo.readingUnit).isEqualTo(ReadingUnit.KWH)
-            assertThat(firstValue.priceSum).isEqualByComparingTo("56000.00")
-            assertThat(firstValue.usageSum).isEqualByComparingTo("799999.9999997400")
-            assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.usage).isEqualByComparingTo("340000.00")
-            assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.price).isEqualByComparingTo("23800.00")
+            assertThat(firstValue.priceSum).isEqualByComparingTo("45500.00")
+            assertThat(firstValue.usageSum).isEqualByComparingTo("649999.99999975500000000000")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.usage).isEqualByComparingTo("50000.00")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.price).isEqualByComparingTo("3500.00")
             assertThat(firstValue.hourlyData[parse("2019-04-17T08:00:00Z")]!!.usage).isEqualByComparingTo("260000.000")
             assertThat(firstValue.hourlyData[parse("2019-04-17T08:00:00Z")]!!.price).isEqualByComparingTo("18200.00")
-            assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.usage).isEqualByComparingTo("200000.00")
-            assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.price).isEqualByComparingTo("14000.00")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.usage).isEqualByComparingTo("340000.00")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.price).isEqualByComparingTo("23800.00")
         }
     }
 
@@ -161,14 +161,14 @@ internal class MeterFileProcessorTest {
             assertThat(firstValue.meterInfo.flowDirection).isEqualTo(FlowDirection.UP)
             assertThat(firstValue.meterInfo.unitPrice).isEqualByComparingTo("0.07")
             assertThat(firstValue.meterInfo.readingUnit).isEqualTo(ReadingUnit.WH)
-            assertThat(firstValue.priceSum).isEqualByComparingTo("21")
-            assertThat(firstValue.usageSum).isEqualByComparingTo("300.0000001500")
+            assertThat(firstValue.priceSum).isEqualByComparingTo("15.75")
+            assertThat(firstValue.usageSum).isEqualByComparingTo("225.00000015750000000000")
             assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.usage).isEqualByComparingTo("200.00")
             assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.price).isEqualByComparingTo("14.00")
-            assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.usage).isEqualByComparingTo("40.00")
-            assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.price).isEqualByComparingTo("2.80")
-            assertThat(firstValue.hourlyData[parse("2019-04-17T11:00:00Z")]!!.usage).isEqualByComparingTo("60.00")
-            assertThat(firstValue.hourlyData[parse("2019-04-17T11:00:00Z")]!!.price).isEqualByComparingTo("4.20")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.usage).isEqualByComparingTo("10.00")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.price).isEqualByComparingTo("0.70")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T11:00:00Z")]!!.usage).isEqualByComparingTo("15.00")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T11:00:00Z")]!!.price).isEqualByComparingTo("1.05")
         }
     }
 
@@ -192,10 +192,10 @@ internal class MeterFileProcessorTest {
             assertThat(firstValue.meterInfo.flowDirection).isEqualTo(FlowDirection.UP)
             assertThat(firstValue.meterInfo.unitPrice).isEqualByComparingTo("0.10")
             assertThat(firstValue.meterInfo.readingUnit).isEqualTo(ReadingUnit.WH)
-            assertThat(firstValue.priceSum).isEqualByComparingTo("24.00")
-            assertThat(firstValue.usageSum).isEqualByComparingTo("240.0000001200")
-            assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.usage).isEqualByComparingTo("240.00")
-            assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.price).isEqualByComparingTo("24.00")
+            assertThat(firstValue.priceSum).isEqualByComparingTo("21.00")
+            assertThat(firstValue.usageSum).isEqualByComparingTo("210.00000015000000000000")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.usage).isEqualByComparingTo("210.00")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.price).isEqualByComparingTo("21.00")
         }
     }
 }

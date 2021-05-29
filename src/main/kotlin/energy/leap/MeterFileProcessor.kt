@@ -15,7 +15,7 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.HOURS
 
-class MeterFileProcessor(private val objectMapper: CustomObjectMapper = CustomObjectMapper()) {
+class MeterFileProcessor(private val objectMapper: CustomObjectMapper) {
     private val xmlMapper = CustomXmlMapper()
 
     private val logger = KotlinLogging.logger { }
@@ -54,7 +54,8 @@ class MeterFileProcessor(private val objectMapper: CustomObjectMapper = CustomOb
             val duration = it.timePeriod.duration
             val startOfReading = it.timePeriod.start.toEpochSecond()
             val endOfReading = startOfReading + duration.toLong()
-            val usagePerSecond = it.value.divide(duration, 10, HALF_UP)
+            val hourUsage = duration.divide(3600.toBigDecimal(), 10, HALF_UP)
+            val usagePerSecond = it.value.divide(duration, 10, HALF_UP).multiply(hourUsage)
 
             for (second in startOfReading until endOfReading) {
                 val startOfHour = second.toZonedDateTime().truncatedTo(HOURS).toEpochSecond()
