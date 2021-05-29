@@ -1,0 +1,33 @@
+<feed>
+    <id>4446bfb3-20aa-3412-ffab-44f88b917955</id>
+    <title type="text">Overlapping Meter</title>
+    <entry>
+        <content>
+            <ReadingType>
+                <flowDirection>1</flowDirection>
+                <kWhPrice>0.10</kWhPrice>
+                <readingUnit>Wh</readingUnit>
+            </ReadingType>
+        </content>
+    </entry>
+    <entry>
+        <content>
+            <IntervalBlock>
+                <IntervalReading>
+                    <timePeriod>
+                        <duration>3600</duration>
+                        <start>1555484400</start>
+                    </timePeriod>
+                    <value>200</value>
+                </IntervalReading>
+                <IntervalReading>
+                    <timePeriod>
+                        <duration>900</duration>
+                        <start>1555485400</start>
+                    </timePeriod>
+                    <value>40</value>
+                </IntervalReading>
+            </IntervalBlock>
+        </content>
+    </entry>
+</feed>

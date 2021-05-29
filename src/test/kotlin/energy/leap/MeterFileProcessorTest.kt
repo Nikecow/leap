@@ -3,8 +3,8 @@ package energy.leap
 import assertk.assertThat
 import assertk.assertions.isEqualByComparingTo
 import assertk.assertions.isEqualTo
-import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import energy.leap.model.FlowDirection
@@ -31,7 +31,10 @@ internal class MeterFileProcessorTest {
 
         // then
         argumentCaptor<MeterReport>().apply {
-            verify(customObjectMapper).writeToFile(any(), capture())
+            verify(customObjectMapper).writeToFile(
+                eq(File("target/Green_Button_Usage_Feed_1a46b097-b80a-4e25-8852-44f88b9179ae.json")),
+                capture()
+            )
 
             assertThat(firstValue.id).isEqualTo(UUID.fromString("1a46b097-b80a-4e25-8852-44f88b9179ae"))
             assertThat(firstValue.title).isEqualTo("Green Button Usage Feed")
@@ -59,7 +62,10 @@ internal class MeterFileProcessorTest {
 
         // then
         argumentCaptor<MeterReport>().apply {
-            verify(customObjectMapper).writeToFile(any(), capture())
+            verify(customObjectMapper).writeToFile(
+                eq(File("target/Green_Button_Usage_Feed_9346bfb3-20aa-3412-ffab-44f88b917999.json")),
+                capture()
+            )
 
             assertThat(firstValue.id).isEqualTo(UUID.fromString("9346bfb3-20aa-3412-ffab-44f88b917999"))
             assertThat(firstValue.title).isEqualTo("Green Button Usage Feed")
@@ -87,7 +93,10 @@ internal class MeterFileProcessorTest {
 
         // then
         argumentCaptor<MeterReport>().apply {
-            verify(customObjectMapper).writeToFile(any(), capture())
+            verify(customObjectMapper).writeToFile(
+                eq(File("target/Leeching_Meter_3346bfb3-20aa-3412-ffab-44f88b9179cc.json")),
+                capture()
+            )
 
             assertThat(firstValue.id).isEqualTo(UUID.fromString("3346bfb3-20aa-3412-ffab-44f88b9179cc"))
             assertThat(firstValue.title).isEqualTo("Leeching Meter")
@@ -111,7 +120,10 @@ internal class MeterFileProcessorTest {
 
         // then
         argumentCaptor<MeterReport>().apply {
-            verify(customObjectMapper).writeToFile(any(), capture())
+            verify(customObjectMapper).writeToFile(
+                eq(File("target/Unordered_Meter_2c46b097-b80a-4e25-8852-44f88b9179ee.json")),
+                capture()
+            )
 
             assertThat(firstValue.id).isEqualTo(UUID.fromString("2c46b097-b80a-4e25-8852-44f88b9179ee"))
             assertThat(firstValue.title).isEqualTo("Unordered Meter")
@@ -139,7 +151,10 @@ internal class MeterFileProcessorTest {
 
         // then
         argumentCaptor<MeterReport>().apply {
-            verify(customObjectMapper).writeToFile(any(), capture())
+            verify(customObjectMapper).writeToFile(
+                eq(File("target/Disjointed_Meter_2646bfb3-20aa-3412-ffab-44f88b917911.json")),
+                capture()
+            )
 
             assertThat(firstValue.id).isEqualTo(UUID.fromString("2646bfb3-20aa-3412-ffab-44f88b917911"))
             assertThat(firstValue.title).isEqualTo("Disjointed Meter")
@@ -154,6 +169,33 @@ internal class MeterFileProcessorTest {
             assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.price).isEqualByComparingTo("2.80")
             assertThat(firstValue.hourlyData[parse("2019-04-17T11:00:00Z")]!!.usage).isEqualByComparingTo("60.00")
             assertThat(firstValue.hourlyData[parse("2019-04-17T11:00:00Z")]!!.price).isEqualByComparingTo("4.20")
+        }
+    }
+
+    @Test
+    fun `should process an overlapping meter file`() {
+        // given
+        val file = File(pathPrefix + "overlapping-meter.xml")
+
+        // when
+        subject.processFile(file)
+
+        // then
+        argumentCaptor<MeterReport>().apply {
+            verify(customObjectMapper).writeToFile(
+                eq(File("target/Overlapping_Meter_4446bfb3-20aa-3412-ffab-44f88b917955.json")),
+                capture()
+            )
+
+            assertThat(firstValue.id).isEqualTo(UUID.fromString("4446bfb3-20aa-3412-ffab-44f88b917955"))
+            assertThat(firstValue.title).isEqualTo("Overlapping Meter")
+            assertThat(firstValue.meterInfo.flowDirection).isEqualTo(FlowDirection.UP)
+            assertThat(firstValue.meterInfo.unitPrice).isEqualByComparingTo("0.10")
+            assertThat(firstValue.meterInfo.readingUnit).isEqualTo(ReadingUnit.WH)
+            assertThat(firstValue.priceSum).isEqualByComparingTo("24.00")
+            assertThat(firstValue.usageSum).isEqualByComparingTo("240.0000001200")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.usage).isEqualByComparingTo("240.00")
+            assertThat(firstValue.hourlyData[parse("2019-04-17T07:00:00Z")]!!.price).isEqualByComparingTo("24.00")
         }
     }
 }

@@ -11,11 +11,9 @@ import java.math.BigDecimal
 import java.math.BigDecimal.ZERO
 import java.math.RoundingMode.HALF_UP
 import java.time.Instant
-import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.HOURS
-import java.time.temporal.ChronoUnit.SECONDS
 
 class MeterFileProcessor(private val objectMapper: CustomObjectMapper = CustomObjectMapper()) {
     private val xmlMapper = CustomXmlMapper()
@@ -41,14 +39,12 @@ class MeterFileProcessor(private val objectMapper: CustomObjectMapper = CustomOb
 
         logger.debug { "Writing report for meter $meterName with id $id to file" }
 
-        val timeStamp = LocalDateTime.now().truncatedTo(SECONDS)
-        val fileName = "${id}_$timeStamp.json"
+        val fileName = "${meterName.replace(" ", "_")}_$id.json"
         val file = File("target/$fileName")
 
         objectMapper.writeToFile(file, report)
 
         logger.info { "Wrote report to ${file.absoluteFile}" }
-
     }
 
     private fun MeterReading.toReport(): MeterReport {
