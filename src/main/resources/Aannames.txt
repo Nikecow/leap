@@ -1,6 +1,8 @@
 1 file per dag per meter
 elke meter heeft maar 1 readingtype, met een 0 of 1 als flow
-kwhprice bigdecimal voor extra precisie
+een meter kan meerdere units hebben zoals gwh of mwh, daarom generiek gemaakt
+unitPrice bigdecimal voor extra precisie
 flowdirection 1 is up = leveren aan het net en 0 is omgekeerd
 de value van een intervalreading kan een decimaal zijn (BigDecimal)
 timestamps zijn in utc tijd
+the intervalreadings can intersect, be disjointed or joining

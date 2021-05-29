@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import energy.leap.model.MeterReading
 
 class CustomXmlMapper {
     private val xmlMapper: XmlMapper
@@ -12,6 +13,7 @@ class CustomXmlMapper {
     init {
         val deserializerModule = SimpleModule()
             .addDeserializer(MeterReading::class.java, MeterReadingDeserializer())
+        // todo: serializer maken voor het wegschrijven?
 
         xmlMapper = XmlMapper
             .builder()

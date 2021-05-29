@@ -11,9 +11,16 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import energy.leap.model.MeterReading
 import java.io.IOException
 
 class MeterReadingDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdDeserializer<MeterReading>(vc) {
+    private val TITLE_KEY = "title"
+    private val ID_KEY = "id"
+    private val METER_INFO_KEY = "meterInfo"
+    private val INTERVAL_READINGS_KEY = "intervalReadings"
+    private val UNIT_PRICE_KEY_SUFFIX = "Price"
+    private val GENERIC_UNIT_PRICE_KEY = "unitPrice"
 
     private val objectMapper: ObjectMapper = ObjectMapper()
         .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true)
@@ -32,25 +39,24 @@ class MeterReadingDeserializer @JvmOverloads constructor(vc: Class<*>? = null) :
 
         val meterReadingObject = jp.createObjectNode()
 
-        meterReadingObject.setValue("id", id)
-        meterReadingObject.setValue("title", title)
-        meterReadingObject.setValue("meterInfo", readingType.convertToGenericReadingType(jp))
-        meterReadingObject.setValue("intervalReadings", intervalReadings)
+        meterReadingObject.setValue(ID_KEY, id)
+        meterReadingObject.setValue(TITLE_KEY, title)
+        meterReadingObject.setValue(METER_INFO_KEY, readingType.convertToGenericReadingType(jp))
+        meterReadingObject.setValue(INTERVAL_READINGS_KEY, intervalReadings)
 
         return objectMapper.treeToValue(meterReadingObject, MeterReading::class.java)
     }
 
     private fun JsonNode.convertToGenericReadingType(jp: JsonParser): ObjectNode {
-        val unitPriceKeySuffix = "Price"
-        val genericUnitPriceKey = "unitPrice"
+
         val objNode = jp.createObjectNode()
 
         val it = fields()
         while (it.hasNext()) {
             val (key, value) = it.next()
 
-            if (key.endsWith(unitPriceKeySuffix)) {
-                objNode.setValue(genericUnitPriceKey, value)
+            if (key.endsWith(UNIT_PRICE_KEY_SUFFIX)) {
+                objNode.setValue(GENERIC_UNIT_PRICE_KEY, value)
             } else {
                 objNode.setValue(key, value)
             }
