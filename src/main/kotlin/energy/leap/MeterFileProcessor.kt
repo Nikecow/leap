@@ -50,7 +50,7 @@ class MeterFileProcessor(private val objectMapper: CustomObjectMapper) {
     }
 
     private fun MeterReading.toReport(): MeterReport {
-        val hourlyData: MutableMap<Long, BigDecimal> = mutableMapOf()
+        val hourMap: MutableMap<Long, BigDecimal> = mutableMapOf()
 
         intervalReadings.forEach {
             val duration = it.timePeriod.duration
@@ -61,13 +61,14 @@ class MeterFileProcessor(private val objectMapper: CustomObjectMapper) {
 
             for (second in startOfReading until endOfReading) {
                 val startOfHour = second.toZonedDateTime().truncatedTo(HOURS).toEpochSecond()
-                val usage = hourlyData[startOfHour] ?: ZERO
-                hourlyData[startOfHour] = usage.plus(usagePerSecond)
+                val usage = hourMap[startOfHour] ?: ZERO
+                hourMap[startOfHour] = usage.plus(usagePerSecond)
             }
         }
 
-        val usageSum = hourlyData.values.reduce(BigDecimal::add)
+        val usageSum = hourMap.values.reduce(BigDecimal::add).roundTwoDecimals()
         val priceSum = usageSum.multiply(meterInfo.unitPrice).applyFlow(meterInfo.flowDirection).roundTwoDecimals()
+        val hourlyData = hourMap.toReportFormat(meterInfo.unitPrice.applyFlow(meterInfo.flowDirection))
 
         return MeterReport(
             id = id,
@@ -75,7 +76,7 @@ class MeterFileProcessor(private val objectMapper: CustomObjectMapper) {
             meterInfo = meterInfo,
             priceSum = priceSum,
             usageSum = usageSum,
-            hourlyData = hourlyData.toReportFormat(meterInfo.unitPrice.applyFlow(meterInfo.flowDirection))
+            hourlyData = hourlyData
         ).also {
             logger.debug { "Generated meter report $it" }
         }

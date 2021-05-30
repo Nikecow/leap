@@ -24,4 +24,4 @@ Make sure you have JDK 11 and Maven installed
 - Use BigDecimal for currencies and durations for extra precision
 - A flexible IntervalReading parser to accommodate for imperfect readings
 - Use ZonedDateTime for hourly reports to account for timezones
-- Round currencies to 2 decimals in the report
+- Round usage and currencies to 2 decimals in the report

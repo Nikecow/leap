@@ -52,7 +52,7 @@ internal class MeterFileProcessorIT {
         assertThat(actual.meterInfo.unitPrice).isEqualByComparingTo("0.07")
         assertThat(actual.meterInfo.readingUnit).isEqualTo(ReadingUnit.KWH)
         assertThat(actual.priceSum).isEqualByComparingTo("45500.00")
-        assertThat(actual.usageSum).isEqualByComparingTo("649999.99999975500000000000")
+        assertThat(actual.usageSum).isEqualByComparingTo("650000.00")
         assertThat(actual.hourlyData[ZonedDateTime.parse("2019-04-17T07:00:00Z")]!!.usage).isEqualByComparingTo("340000.00")
         assertThat(actual.hourlyData[ZonedDateTime.parse("2019-04-17T07:00:00Z")]!!.price).isEqualByComparingTo("23800.00")
         assertThat(actual.hourlyData[ZonedDateTime.parse("2019-04-17T08:00:00Z")]!!.usage).isEqualByComparingTo("260000.000")
