@@ -2,10 +2,11 @@
 
 ### Get started
 
+Make sure you have JDK 11 and Maven installed
 - Run `mvn clean install`
 - Comment out `@Disable` in [MeterFileProcessorIT](/src/test/kotlin/energy/leap/MeterFileProcessorIT.kt) and run the
-  test to parse all files in the resource folder.
-- You will find the reports in the target folder
+  test
+- You will find the generated reports in the target folder
 
 ### Assumptions
 
@@ -19,7 +20,7 @@
 
 ### Design choices:
 
-- Use BigDecimal for prices for extra precision, as small differences can add up
+- Use BigDecimal for currencies and durations for extra precision
 - A flexible IntervalReading parser to accommodate for imperfect readings
 - Use ZonedDateTime for hourly reports to account for timezones
 - Round currencies to 2 decimals in the report
