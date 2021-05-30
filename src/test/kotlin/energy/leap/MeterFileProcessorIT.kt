@@ -17,7 +17,6 @@ import java.util.UUID
 
 internal class MeterFileProcessorIT {
     private val pathPrefix = "src/test/resources/"
-
     private val customObjectMapper = CustomObjectMapper()
     private val subject = MeterFileProcessor(customObjectMapper)
 

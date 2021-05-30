@@ -10,12 +10,14 @@ import energy.leap.model.MeterReading
 import java.io.IOException
 
 class MeterReadingDeserializer @JvmOverloads constructor(vc: Class<*>? = null) : StdDeserializer<MeterReading>(vc) {
-    private val TITLE_KEY = "title"
-    private val ID_KEY = "id"
-    private val METER_INFO_KEY = "meterInfo"
-    private val INTERVAL_READINGS_KEY = "intervalReadings"
-    private val UNIT_PRICE_KEY_SUFFIX = "Price"
-    private val GENERIC_UNIT_PRICE_KEY = "unitPrice"
+    companion object {
+        private const val TITLE_KEY = "title"
+        private const val ID_KEY = "id"
+        private const val METER_INFO_KEY = "meterInfo"
+        private const val INTERVAL_READINGS_KEY = "intervalReadings"
+        private const val UNIT_PRICE_KEY_SUFFIX = "Price"
+        private const val GENERIC_UNIT_PRICE_KEY = "unitPrice"
+    }
 
     private val objectMapper = CustomObjectMapper()
 
