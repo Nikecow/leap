@@ -20,6 +20,6 @@
 ### Design choices:
 
 - Use BigDecimal for prices for extra precision, as small differences can add up
-- Round currencies to 2 decimals in the report
-- Keep all timestamps in UTC, use ZonedDateTime whenever possible
 - A flexible IntervalReading parser to accommodate for imperfect readings
+- Use ZonedDateTime for hourly reports to account for timezones
+- Round currencies to 2 decimals in the report
