@@ -20,6 +20,7 @@ Make sure you have JDK 11 and Maven installed
 
 ### Design choices:
 
+- Use Jackson for mapping as it is a performant library with nice features
 - Use BigDecimal for currencies and durations for extra precision
 - A flexible IntervalReading parser to accommodate for imperfect readings
 - Use ZonedDateTime for hourly reports to account for timezones

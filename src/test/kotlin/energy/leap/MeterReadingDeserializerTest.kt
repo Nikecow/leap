@@ -8,6 +8,7 @@ import assertk.assertions.isEqualByComparingTo
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFailure
 import assertk.assertions.isNotNull
+import assertk.assertions.isSuccess
 import assertk.assertions.messageContains
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
@@ -118,6 +119,43 @@ internal class MeterReadingDeserializerTest {
         assertThat(result.intervalReadings[0].timePeriod.duration).isEqualByComparingTo("3600")
         assertThat(result.intervalReadings[0].timePeriod.start).isSameInstant(ZonedDateTime.parse("2019-04-17T07:00:00Z"))
         assertThat(result.intervalReadings[0].value).isEqualByComparingTo("340000")
+    }
+
+    @Test
+    internal fun `should accept meter xml with unknown property`() {
+        assertThat {
+            readValue<MeterReading>(
+                """
+                <feed>
+                    <id>3b46b097-b80a-4e25-8852-44f88b9179ae</id>
+                    <title type="text">Simple Meter</title>
+                    <foo>bar</foo>
+                    <entry>
+                        <content>
+                            <ReadingType>
+                                <flowDirection>0</flowDirection>
+                                <kWhPrice>0.123</kWhPrice>
+                                <readingUnit>kWh</readingUnit>
+                            </ReadingType>
+                        </content>
+                    </entry>
+                    <entry>
+                        <content>
+                            <IntervalBlock>
+                                <IntervalReading>
+                                    <timePeriod>
+                                        <duration>3600</duration>
+                                        <start>1555484400</start>
+                                    </timePeriod>
+                                    <value>340000</value>
+                                </IntervalReading>
+                            </IntervalBlock>
+                        </content>
+                    </entry>
+                </feed>
+        """
+            )
+        }.isSuccess()
     }
 
     @Test
