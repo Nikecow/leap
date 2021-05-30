@@ -25,15 +25,10 @@ class MeterFileProcessor(private val objectMapper: CustomObjectMapper) {
     fun processFile(file: File): File {
         logger.info { "Processing file ${file.name}" }
 
-        val reading = readFile(file)
+        val reading = xmlMapper.getMapper().readValue<MeterReading>(file)
 
         return generateReport(reading.toReport())
     }
-
-    private fun readFile(file: File) =
-        xmlMapper.getMapper().readValue<MeterReading>(file).also {
-            logger.debug { "Parsed file, retrieved reading: $it" }
-        }
 
     private fun generateReport(report: MeterReport): File {
         val meterName = report.title
