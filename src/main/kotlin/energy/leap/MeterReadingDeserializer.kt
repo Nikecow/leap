@@ -30,31 +30,30 @@ class MeterReadingDeserializer @JvmOverloads constructor(vc: Class<*>? = null) :
         val readingType = root.at("/entry")[0].at("/content/ReadingType")
         val intervalReadings = root.at("/entry")[1].at("/content/IntervalBlock/IntervalReading")
 
-        val meterReadingObject = jp.createObjectNode()
+        val obj = jp.createObjectNode()
 
-        meterReadingObject.setValue(ID_KEY, id)
-        meterReadingObject.setValue(TITLE_KEY, title)
-        meterReadingObject.setValue(METER_INFO_KEY, readingType.convertToGenericReadingType(jp))
-        meterReadingObject.setValue(INTERVAL_READINGS_KEY, intervalReadings)
+        obj.setValue(ID_KEY, id)
+        obj.setValue(TITLE_KEY, title)
+        obj.setValue(METER_INFO_KEY, readingType.convertToGenericReadingType(jp))
+        obj.setValue(INTERVAL_READINGS_KEY, intervalReadings)
 
-        return objectMapper.getMapper().treeToValue(meterReadingObject, MeterReading::class.java)
+        return objectMapper.getMapper().treeToValue(obj, MeterReading::class.java)
     }
 
     private fun JsonNode.convertToGenericReadingType(jp: JsonParser): ObjectNode {
-
-        val objNode = jp.createObjectNode()
-
+        val obj = jp.createObjectNode()
         val it = fields()
+
         while (it.hasNext()) {
             val (key, value) = it.next()
 
             if (key.endsWith(UNIT_PRICE_KEY_SUFFIX)) {
-                objNode.setValue(GENERIC_UNIT_PRICE_KEY, value)
+                obj.setValue(GENERIC_UNIT_PRICE_KEY, value)
             } else {
-                objNode.setValue(key, value)
+                obj.setValue(key, value)
             }
         }
-        return objNode
+        return obj
     }
 
     private fun ObjectNode.setValue(fieldName: String, value: JsonNode) = set<JsonNode>(fieldName, value)
