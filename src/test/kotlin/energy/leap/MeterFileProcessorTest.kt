@@ -22,7 +22,7 @@ internal class MeterFileProcessorTest {
     private val subject = MeterFileProcessor(customObjectMapper)
 
     @Test
-    fun `should process a meter file in kWh`() {
+    fun `should process meter file with unit type in kWh`() {
         // given
         val file = File(pathPrefix + "meter1.xml")
 
@@ -53,7 +53,7 @@ internal class MeterFileProcessorTest {
     }
 
     @Test
-    fun `should process a meter file with Wh`() {
+    fun `should process meter file with unit type in Wh`() {
         // given
         val file = File(pathPrefix + "meter2.xml")
 
@@ -84,7 +84,7 @@ internal class MeterFileProcessorTest {
     }
 
     @Test
-    fun `should process a leeching meter`() {
+    fun `should process meter with leeching flow direction`() {
         // given
         val file = File(pathPrefix + "leeching-meter.xml")
 
@@ -111,7 +111,7 @@ internal class MeterFileProcessorTest {
     }
 
     @Test
-    fun `should process an unordered meter file`() {
+    fun `should process meter file with unordered readings`() {
         // given
         val file = File(pathPrefix + "unordered-meter.xml")
 
@@ -142,7 +142,7 @@ internal class MeterFileProcessorTest {
     }
 
     @Test
-    fun `should process a disjointed meter file`() {
+    fun `should process a meter file with disjointed readings`() {
         // given
         val file = File(pathPrefix + "disjointed-meter.xml")
 
@@ -173,7 +173,7 @@ internal class MeterFileProcessorTest {
     }
 
     @Test
-    fun `should process an overlapping meter file`() {
+    fun `should process meter file with overlapping readings`() {
         // given
         val file = File(pathPrefix + "overlapping-meter.xml")
 
@@ -227,6 +227,37 @@ internal class MeterFileProcessorTest {
             assertThat(firstValue.hourlyData[parse("2019-04-17T08:00:00Z")]!!.price).isEqualByComparingTo("0.06")
             assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.usage).isEqualByComparingTo("0.20")
             assertThat(firstValue.hourlyData[parse("2019-04-17T09:00:00Z")]!!.price).isEqualByComparingTo("0.00")
+        }
+    }
+
+    @Test
+    fun `should process a meter with readings spanning multiple days`() {
+        // given
+        val file = File(pathPrefix + "multiple-days-meter.xml")
+
+        // when
+        subject.processFile(file)
+
+        // then
+        argumentCaptor<MeterReport>().apply {
+            verify(customObjectMapper).writeToFile(
+                eq(File("target/Multiple_Days_Meter_2216bfb3-20aa-3412-ffab-44f88b917988.json")),
+                capture()
+            )
+
+            assertThat(firstValue.id).isEqualTo(UUID.fromString("2216bfb3-20aa-3412-ffab-44f88b917988"))
+            assertThat(firstValue.title).isEqualTo("Multiple Days Meter")
+            assertThat(firstValue.meterInfo.flowDirection).isEqualTo(FlowDirection.UP)
+            assertThat(firstValue.meterInfo.unitPrice).isEqualByComparingTo("0.10")
+            assertThat(firstValue.meterInfo.readingUnit).isEqualTo(ReadingUnit.WH)
+            assertThat(firstValue.priceSum).isEqualByComparingTo("135.00")
+            assertThat(firstValue.usageSum).isEqualByComparingTo("1350.00000027000000000000")
+            assertThat(firstValue.hourlyData[parse("2021-05-30T23:00:00Z")]!!.usage).isEqualByComparingTo("50.00")
+            assertThat(firstValue.hourlyData[parse("2021-05-30T23:00:00Z")]!!.price).isEqualByComparingTo("5.00")
+            assertThat(firstValue.hourlyData[parse("2021-05-31T00:00:00Z")]!!.usage).isEqualByComparingTo("300.00")
+            assertThat(firstValue.hourlyData[parse("2021-05-31T00:00:00Z")]!!.price).isEqualByComparingTo("30.00")
+            assertThat(firstValue.hourlyData[parse("2021-06-01T00:00:00Z")]!!.usage).isEqualByComparingTo("1000.00")
+            assertThat(firstValue.hourlyData[parse("2021-06-01T00:00:00Z")]!!.price).isEqualByComparingTo("100.00")
         }
     }
 }

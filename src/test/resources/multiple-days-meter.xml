@@ -1,0 +1,47 @@
+<feed>
+    <id>2216bfb3-20aa-3412-ffab-44f88b917988</id>
+    <title type="text">Multiple Days Meter</title>
+    <entry>
+        <content>
+            <ReadingType>
+                <flowDirection>1</flowDirection>
+                <kWhPrice>0.10</kWhPrice>
+                <readingUnit>Wh</readingUnit>
+            </ReadingType>
+        </content>
+    </entry>
+    <entry>
+        <content>
+            <IntervalBlock>
+                <IntervalReading>
+                    <timePeriod>
+                        <duration>1800</duration>
+                        <start>1622417400</start>
+                    </timePeriod>
+                    <value>100</value>
+                </IntervalReading>
+                <IntervalReading>
+                    <timePeriod>
+                        <duration>1800</duration>
+                        <start>1622419200</start>
+                    </timePeriod>
+                    <value>200</value>
+                </IntervalReading>
+                <IntervalReading>
+                    <timePeriod>
+                        <duration>3600</duration>
+                        <start>1622419200</start>
+                    </timePeriod>
+                    <value>200</value>
+                </IntervalReading>
+                <IntervalReading>
+                    <timePeriod>
+                        <duration>3600</duration>
+                        <start>1622505600</start>
+                    </timePeriod>
+                    <value>1000</value>
+                </IntervalReading>
+            </IntervalBlock>
+        </content>
+    </entry>
+</feed>
