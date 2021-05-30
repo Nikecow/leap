@@ -22,12 +22,12 @@ class MeterFileProcessor(private val objectMapper: CustomObjectMapper) {
 
     private val logger = KotlinLogging.logger { }
 
-    fun processFile(file: File) {
+    fun processFile(file: File): File {
         logger.info { "Processing file ${file.name}" }
 
         val reading = readFile(file)
 
-        generateReport(reading.toReport())
+        return generateReport(reading.toReport())
     }
 
     private fun readFile(file: File) =
@@ -35,7 +35,7 @@ class MeterFileProcessor(private val objectMapper: CustomObjectMapper) {
             logger.debug { "Parsed file, retrieved reading: $it" }
         }
 
-    private fun generateReport(report: MeterReport) {
+    private fun generateReport(report: MeterReport): File {
         val meterName = report.title
         val id = report.id
 
@@ -46,7 +46,7 @@ class MeterFileProcessor(private val objectMapper: CustomObjectMapper) {
 
         objectMapper.writeToFile(file, report)
 
-        logger.info { "Wrote report to ${file.absoluteFile}" }
+        return file.also { logger.info { "Wrote report to ${it.absoluteFile}" } }
     }
 
     private fun MeterReading.toReport(): MeterReport {

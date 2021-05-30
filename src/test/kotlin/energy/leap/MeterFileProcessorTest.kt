@@ -3,6 +3,11 @@ package energy.leap
 import assertk.assertThat
 import assertk.assertions.isEqualByComparingTo
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFailure
+import assertk.assertions.isInstanceOf
+import assertk.assertions.isNotNull
+import assertk.assertions.messageContains
+import com.fasterxml.jackson.core.JsonParseException
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
@@ -22,7 +27,7 @@ internal class MeterFileProcessorTest {
     private val subject = MeterFileProcessor(customObjectMapper)
 
     @Test
-    fun `should process meter file with unit type in kWh`() {
+    internal fun `should process meter file with unit type in kWh`() {
         // given
         val file = File(pathPrefix + "meter1.xml")
 
@@ -53,7 +58,7 @@ internal class MeterFileProcessorTest {
     }
 
     @Test
-    fun `should process meter file with unit type in Wh`() {
+    internal fun `should process meter file with unit type in Wh`() {
         // given
         val file = File(pathPrefix + "meter2.xml")
 
@@ -84,7 +89,7 @@ internal class MeterFileProcessorTest {
     }
 
     @Test
-    fun `should process meter with leeching flow direction`() {
+    internal fun `should process meter with leeching flow direction`() {
         // given
         val file = File(pathPrefix + "leeching-meter.xml")
 
@@ -111,7 +116,7 @@ internal class MeterFileProcessorTest {
     }
 
     @Test
-    fun `should process meter file with unordered readings`() {
+    internal fun `should process meter file with unordered readings`() {
         // given
         val file = File(pathPrefix + "unordered-meter.xml")
 
@@ -142,7 +147,7 @@ internal class MeterFileProcessorTest {
     }
 
     @Test
-    fun `should process a meter file with disjointed readings`() {
+    internal fun `should process a meter file with disjointed readings`() {
         // given
         val file = File(pathPrefix + "disjointed-meter.xml")
 
@@ -173,7 +178,7 @@ internal class MeterFileProcessorTest {
     }
 
     @Test
-    fun `should process meter file with overlapping readings`() {
+    internal fun `should process meter file with overlapping readings`() {
         // given
         val file = File(pathPrefix + "overlapping-meter.xml")
 
@@ -200,7 +205,7 @@ internal class MeterFileProcessorTest {
     }
 
     @Test
-    fun `should process a meter with lots of decimal values`() {
+    internal fun `should process a meter with lots of decimal values`() {
         // given
         val file = File(pathPrefix + "decimal-meter.xml")
 
@@ -231,7 +236,7 @@ internal class MeterFileProcessorTest {
     }
 
     @Test
-    fun `should process a meter with readings spanning multiple days`() {
+    internal fun `should process a meter with readings spanning multiple days`() {
         // given
         val file = File(pathPrefix + "multiple-days-meter.xml")
 
@@ -259,5 +264,17 @@ internal class MeterFileProcessorTest {
             assertThat(firstValue.hourlyData[parse("2021-06-01T00:00:00Z")]!!.usage).isEqualByComparingTo("1000.00")
             assertThat(firstValue.hourlyData[parse("2021-06-01T00:00:00Z")]!!.price).isEqualByComparingTo("100.00")
         }
+    }
+
+    @Test
+    internal fun `should reject corrupted file`() {
+        assertThat {
+            val file = File(pathPrefix + "corrupted-meter.xml")
+
+            subject.processFile(file)
+        }.isFailure()
+            .isInstanceOf(JsonParseException::class).given {
+                assertThat(it.cause).isNotNull().messageContains("Invalid UTF-8 middle byte 0xe (at char #0, byte #-1)")
+            }
     }
 }
