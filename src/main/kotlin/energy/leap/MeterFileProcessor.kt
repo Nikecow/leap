@@ -15,6 +15,8 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.HOURS
 
+const val SECONDS_IN_HOUR = 3600
+
 class MeterFileProcessor(private val objectMapper: CustomObjectMapper) {
     private val xmlMapper = CustomXmlMapper()
 
@@ -54,7 +56,7 @@ class MeterFileProcessor(private val objectMapper: CustomObjectMapper) {
             val duration = it.timePeriod.duration
             val startOfReading = it.timePeriod.start.toEpochSecond()
             val endOfReading = startOfReading + duration.toLong()
-            val hourUsage = duration.divide(3600.toBigDecimal(), 10, HALF_UP)
+            val hourUsage = duration.divide(SECONDS_IN_HOUR.toBigDecimal(), 10, HALF_UP)
             val usagePerSecond = it.value.divide(duration, 10, HALF_UP).multiply(hourUsage)
 
             for (second in startOfReading until endOfReading) {
