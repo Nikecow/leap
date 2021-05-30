@@ -15,7 +15,7 @@ import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit.HOURS
 
-const val SECONDS_IN_HOUR = 3600
+const val SECONDS_IN_HOUR = 3600L
 
 class MeterFileProcessor(private val objectMapper: CustomObjectMapper) {
     private val xmlMapper = CustomXmlMapper()
@@ -56,8 +56,8 @@ class MeterFileProcessor(private val objectMapper: CustomObjectMapper) {
             val duration = it.timePeriod.duration
             val startOfReading = it.timePeriod.start.toEpochSecond()
             val endOfReading = startOfReading + duration.toLong()
-            val hourUsage = duration.divide(SECONDS_IN_HOUR.toBigDecimal(), 10, HALF_UP)
-            val usagePerSecond = it.value.divide(duration, 10, HALF_UP).multiply(hourUsage)
+            val hourUsage = duration.divideWithScale(SECONDS_IN_HOUR.toBigDecimal())
+            val usagePerSecond = it.value.divideWithScale(duration).multiply(hourUsage)
 
             for (second in startOfReading until endOfReading) {
                 val startOfHour = second.toZonedDateTime().truncatedTo(HOURS).toEpochSecond()
@@ -92,4 +92,5 @@ class MeterFileProcessor(private val objectMapper: CustomObjectMapper) {
     private fun Long.toZonedDateTime() = ZonedDateTime.ofInstant(Instant.ofEpochSecond(this), ZoneOffset.UTC)
     private fun BigDecimal.roundTwoDecimals() = setScale(2, HALF_UP)
     private fun BigDecimal.applyFlow(flow: FlowDirection) = if (flow == FlowDirection.UP) this else this.negate()
+    private fun BigDecimal.divideWithScale(bd: BigDecimal) = divide(bd, 10, HALF_UP)
 }
